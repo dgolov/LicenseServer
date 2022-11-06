@@ -8,14 +8,13 @@ import (
 
 // Handlers
 
-func checkHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
+func checkHandler(writer http.ResponseWriter, request *http.Request) {
+	log.Println(request.Method, request.RequestURI)
 	result := fmt.Sprintf("Hello World!!\n")
-	w.Write([]byte(result))
+	writer.Write([]byte(result))
 }
 
-
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
-	w.Write([]byte("Ok\n"))
+func testHandler(writer http.ResponseWriter, request *http.Request) {
+	log.Println(request.Method, request.RequestURI)
+	writer.Write([]byte("Ok\n"))
 }
