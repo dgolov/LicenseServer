@@ -1,20 +1,39 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 )
 
 // Handlers
 
-func checkHandler(writer http.ResponseWriter, request *http.Request) {
-	log.Println(request.Method, request.RequestURI)
-	result := fmt.Sprintf("Hello World!!\n")
-	writer.Write([]byte(result))
+func checkHandler(w http.ResponseWriter, r *http.Request) {
+	var payload Payload
+
+	log.Println(r.Method, r.RequestURI)
+
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", http.StatusBadRequest)
+		return
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	message, statusCode := checkLicense(payload)
+	if statusCode != 200 {
+		http.Error(w, message, statusCode)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
-func testHandler(writer http.ResponseWriter, request *http.Request) {
-	log.Println(request.Method, request.RequestURI)
-	writer.Write([]byte("Ok\n"))
+func testHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method, r.RequestURI)
+	w.WriteHeader(http.StatusOK)
 }
