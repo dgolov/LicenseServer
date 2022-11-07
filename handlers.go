@@ -9,6 +9,7 @@ import (
 // Handlers
 
 func checkHandler(w http.ResponseWriter, r *http.Request) {
+	// Ручка проверки лицензии
 	var payload Payload
 
 	log.Println(r.Method, r.RequestURI)
@@ -34,6 +35,7 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
+	// health check
 	log.Println(r.Method, r.RequestURI)
 	w.WriteHeader(http.StatusOK)
 }
