@@ -1,16 +1,28 @@
-package main
+package handler
 
 import (
 	"encoding/json"
+	"github.com/dgolov/LicenseServer/pkg/service"
 	"log"
 	"net/http"
 )
 
+type Payload struct {
+	// Структура запроса
+	LicenseUuid        string `json:"license_uuid"`
+	HardwareParameters string `json:"hardware_parameters"`
+}
+
+type Handler struct {
+}
+
 // Handlers
 
-func checkHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CheckHandler(w http.ResponseWriter, r *http.Request) {
 	// Ручка проверки лицензии
 	var payload Payload
+
+	check := new(service.Check)
 
 	log.Println(r.Method, r.RequestURI)
 
@@ -26,7 +38,8 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message, statusCode := checkLicense(payload)
+	log.Println("Request: ", payload)
+	message, statusCode := check.CheckLicense(payload.LicenseUuid, payload.HardwareParameters)
 	if statusCode != 200 {
 		http.Error(w, message, statusCode)
 		return
@@ -34,7 +47,7 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func testHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) TestHandler(w http.ResponseWriter, r *http.Request) {
 	// health check
 	log.Println(r.Method, r.RequestURI)
 	w.WriteHeader(http.StatusOK)
