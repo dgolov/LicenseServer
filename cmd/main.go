@@ -1,18 +1,23 @@
 package main
 
 import (
+	"github.com/dgolov/LicenseServer"
 	"github.com/dgolov/LicenseServer/pkg/handler"
 	"log"
-	"net/http"
 )
 
 // Main
 
 func main() {
+	log.Println("Start app")
 	handlers := new(handler.Handler)
-	http.HandleFunc("/check", handlers.CheckHandler)
-	http.HandleFunc("/test", handlers.TestHandler)
+	port := "8001"
+	srv := new(LicenseServer.Server)
 
-	log.Println("Start server on port 8081")
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	if err := srv.Run(port, handlers.InitRoutes()); err != nil {
+		log.Fatalf("Error while runing http server: %s", err.Error())
+		return
+	}
+
+	log.Printf("Server start on port %s", port)
 }
