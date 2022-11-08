@@ -2,10 +2,10 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func (h *Handler) test(c *gin.Context) {
 	// HealthCheck
-	log.Println("Handler test")
+	logrus.Println("Handler test")
 }

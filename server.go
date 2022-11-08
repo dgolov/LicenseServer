@@ -2,7 +2,7 @@ package LicenseServer
 
 import (
 	"context"
-	"log"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -21,7 +21,7 @@ func (s Server) Run(port string, handler http.Handler) error {
 		WriteTimeout:   10 * time.Second,
 	}
 
-	log.Printf("Server start on port %s", port)
+	logrus.Printf("Server start on port %s", port)
 	return s.httpServer.ListenAndServe()
 }
 

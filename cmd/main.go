@@ -5,15 +5,16 @@ import (
 	"github.com/dgolov/LicenseServer/pkg/handler"
 	"github.com/dgolov/LicenseServer/pkg/repository"
 	"github.com/dgolov/LicenseServer/pkg/service"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 )
 
 // Main
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
-		log.Fatalf("Error initializing config file: %s", err.Error())
+		logrus.Fatalf("Error initializing config file: %s", err.Error())
 	}
 
 	db, err := repository.NewPostgresDB(repository.Config{
@@ -26,7 +27,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("Error initializing database: %s", err.Error())
+		logrus.Fatalf("Error initializing database: %s", err.Error())
 	}
 
 	repos := repository.NewRepository(db)
@@ -36,7 +37,7 @@ func main() {
 	srv := new(LicenseServer.Server)
 
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("Error while runing http server: %s", err.Error())
+		logrus.Fatalf("Error while running http server: %s", err.Error())
 	}
 }
 
