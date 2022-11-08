@@ -16,5 +16,5 @@ $ curl http://127.0.0.1:8081/test
 
 ```
 $ curl http://127.0.0.1:8081/check
-True
+200 Ok
 ```

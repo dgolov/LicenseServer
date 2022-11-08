@@ -9,15 +9,11 @@ import (
 // Main
 
 func main() {
-	log.Println("Start app")
 	handlers := new(handler.Handler)
-	port := "8001"
 	srv := new(LicenseServer.Server)
 
-	if err := srv.Run(port, handlers.InitRoutes()); err != nil {
+	if err := srv.Run("8001", handlers.InitRoutes()); err != nil {
 		log.Fatalf("Error while runing http server: %s", err.Error())
 		return
 	}
-
-	log.Printf("Server start on port %s", port)
 }

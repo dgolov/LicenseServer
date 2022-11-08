@@ -6,6 +6,7 @@ type Handler struct {
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
+	// All routes
 	router := gin.New()
 
 	main := router.Group("/")
