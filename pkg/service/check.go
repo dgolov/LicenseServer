@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dgolov/LicenseServer/pkg/repository"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type CheckService struct {
@@ -31,6 +32,14 @@ func (s *CheckService) CheckLicense(LicenseUuid string, HardwareParameters strin
 
 	if licenseParam.IsActive != true {
 		return 403, fmt.Errorf("license %s is not active", LicenseUuid)
+	}
+
+	if licenseParam.HardwareParameters != HardwareParameters {
+		return 403, fmt.Errorf("license %s hardware parrametrs is not correct", LicenseUuid)
+	}
+
+	if licenseParam.ActivatedOn.Before(time.Now()) {
+		return 403, fmt.Errorf("license %s expired", LicenseUuid)
 	}
 
 	return 200, nil
