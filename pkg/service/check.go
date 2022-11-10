@@ -30,6 +30,10 @@ func (s *CheckService) CheckLicense(LicenseUuid string, HardwareParameters strin
 		return 409, fmt.Errorf("error getting license by uuid")
 	}
 
+	if licenseParam.Uuid == "" {
+		return 403, fmt.Errorf("license %s not found", LicenseUuid)
+	}
+
 	if licenseParam.IsActive != true {
 		return 403, fmt.Errorf("license %s is not active", LicenseUuid)
 	}
@@ -38,7 +42,7 @@ func (s *CheckService) CheckLicense(LicenseUuid string, HardwareParameters strin
 		return 403, fmt.Errorf("license %s hardware parrametrs is not correct", LicenseUuid)
 	}
 
-	if licenseParam.ActivatedOn.Before(time.Now()) {
+	if licenseParam.ExpiratedOn.Before(time.Now()) {
 		return 403, fmt.Errorf("license %s expired", LicenseUuid)
 	}
 

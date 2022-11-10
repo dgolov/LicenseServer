@@ -21,7 +21,7 @@ func (r *CheckPostgres) GetLicenseByUuid(uuid string) (LicenseServer.License, er
 	var item LicenseServer.License
 
 	query := fmt.Sprintf(
-		`SELECT uuid, hardware_parameters, is_active, activated_on FROM license WHERE uuid = '%s'`, uuid)
+		`SELECT uuid, hardware_parameters, is_active, expirated_on FROM license WHERE uuid = '%s'`, uuid)
 
 	if err := r.db.Get(&item, query); err != nil {
 		return item, nil
