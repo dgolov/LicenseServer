@@ -1,13 +1,37 @@
 package service
 
-type Check struct {
+import (
+	"fmt"
+	"github.com/dgolov/LicenseServer/pkg/repository"
+	"github.com/sirupsen/logrus"
+)
+
+type CheckService struct {
+	repo repository.License
 }
 
-func (c *Check) CheckLicense(LicenseUuid string, HardwareParameters string) (string, int) {
+func NewCheckLicense(repo repository.License) *CheckService {
+	return &CheckService{repo: repo}
+}
+
+func (s *CheckService) CheckLicense(LicenseUuid string, HardwareParameters string) (int, error) {
 	// Проверка лицензии
+	logrus.Println("[Unit] CheckService - CheckLicense")
+
 	if len(LicenseUuid) == 0 || len(HardwareParameters) == 0 {
-		return "Error input data. License uuid or hardware params is not found.", 409
+		logrus.Error("Error input data. License uuid or hardware params is not found.")
+		return 409, fmt.Errorf("error input data. License uuid or hardware params is not found")
 	}
 
-	return "Ok", 200
+	licenseParam, err := s.repo.GetLicenseByUuid(LicenseUuid)
+	if err != nil {
+		logrus.Error("Error getting license by uuid. ", err.Error())
+		return 409, fmt.Errorf("error getting license by uuid")
+	}
+
+	if licenseParam.IsActive != true {
+		return 403, fmt.Errorf("license %s is not active", LicenseUuid)
+	}
+
+	return 200, nil
 }

@@ -1,8 +1,12 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/dgolov/LicenseServer"
+	"github.com/jmoiron/sqlx"
+)
 
-type License struct {
+type License interface {
+	GetLicenseByUuid(uuid string) (LicenseServer.License, error)
 }
 
 type Repository struct {
@@ -10,5 +14,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		License: NewCheckPostgres(db),
+	}
 }

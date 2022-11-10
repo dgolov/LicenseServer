@@ -1,8 +1,11 @@
 package service
 
-import "github.com/dgolov/LicenseServer/pkg/repository"
+import (
+	"github.com/dgolov/LicenseServer/pkg/repository"
+)
 
 type License interface {
+	CheckLicense(LicenseUuid string, HardwareParameters string) (int, error)
 }
 
 type Service struct {
@@ -10,5 +13,7 @@ type Service struct {
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		License: NewCheckLicense(repos.License),
+	}
 }
